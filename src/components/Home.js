@@ -104,7 +104,7 @@
 
 import React, { useState, useEffect } from "react";
 import { db } from "../firebase";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, query, where, deleteDoc, doc } from "firebase/firestore";
 import { Link } from "react-router-dom";
 import "../App.css";
 import "./Home.css";
@@ -114,6 +114,7 @@ function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
 
+  // Fetch products from Firestore
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
@@ -129,6 +130,7 @@ function Home() {
     fetchProducts();
   }, []);
 
+  // Fetch filtered products based on searchTerm
   useEffect(() => {
     const fetchFilteredProducts = async () => {
       setLoading(true);
@@ -162,6 +164,20 @@ function Home() {
     fetchFilteredProducts();
   }, [searchTerm]);
 
+  // Handle product deletion
+  const handleDelete = async (id) => {
+    try {
+      // Delete from Firestore
+      const productRef = doc(db, "products", id);
+      await deleteDoc(productRef);
+
+      // Update local state by removing the deleted product
+      setProducts(products.filter((product) => product.id !== id));
+    } catch (error) {
+      console.error("Error deleting product: ", error);
+    }
+  };
+
   return (
     <div className="home-container">
       <h1 className="title">Explore Products</h1>
@@ -188,6 +204,12 @@ function Home() {
               <Link to={`/edit-product/${product.id}`}>
                 <button>Edit Product</button>
               </Link>
+              <button
+                className="delete-button"
+                onClick={() => handleDelete(product.id)}
+              >
+                Delete
+              </button>
             </div>
           ))}
         </div>

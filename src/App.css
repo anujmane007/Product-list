@@ -148,7 +148,7 @@ button:disabled {
   div {
     width: calc(100% - 20px); /* Reduce side margin */
     padding: 15px;
-    margin: 60px auto 20px auto; /* Adjusted for mobile nav */
+    margin: 10px auto 20px auto; /* Adjusted for mobile nav */
   }
 
   nav {
